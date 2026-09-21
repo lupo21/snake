@@ -21,4 +21,13 @@ Arrows or WASD move · `p`/space pause · `r` restart · `q` quit (Ctrl-C too).
 cmake -B build && cmake --build build -j && ctest --test-dir build --output-on-failure
 ```
 
+## Docker build container
+
+```bash
+docker build -t snake .   # compiles + runs tests inside the build
+docker run --rm -it snake --width 30 --height 16
+```
+
+Pushes to `main` (and PRs) trigger the same via `.github/workflows/build.yml`.
+
 Game logic lives in `src/game.{hpp,cpp}` (no I/O); terminal handling in `src/term.*`.
