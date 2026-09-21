@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>snake — C++20 CLI snake</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; }
+    pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>snake</h1>
+  <p>Minimal CLI snake in C++20. No dependencies — just CMake + a C++20 compiler.</p>
+  <h2>Build &amp; run</h2>
+  <pre>cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j
+./build/snake</pre>
+  <h2>Keys</h2>
+  <p>Arrows / WASD move · <code>p</code> pause · <code>r</code> restart · <code>q</code> quit.</p>
+  <p><a href="https://github.com/lupo21/snake">Source on GitHub</a></p>
+</body>
+</html>
