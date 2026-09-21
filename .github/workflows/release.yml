@@ -1,0 +1,32 @@
+name: release
+
+# Cut a release: git tag v0.1.0 && git push origin v0.1.0
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchain
+        run: sudo apt-get update && sudo apt-get install -y cmake g++
+      - name: Configure (static release)
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSNAKE_STATIC=ON -DSNAKE_VERSION=${GITHUB_REF_NAME}
+      - name: Build
+        run: cmake --build build -j
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+      - name: Package
+        run: |
+          ./build/snake --version
+          tar -czf snake-linux-x86_64.tar.gz -C build snake
+          sha256sum snake-linux-x86_64.tar.gz > snake-linux-x86_64.tar.gz.sha256
+      - name: Publish GitHub Release
+        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --notes "Static Linux x86_64 binary." snake-linux-x86_64.tar.gz snake-linux-x86_64.tar.gz.sha256
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -7,11 +7,16 @@
 #include "game.hpp"
 #include "term.hpp"
 
+#ifndef SNAKE_VERSION
+#define SNAKE_VERSION "dev"
+#endif
+
 namespace {
 struct Args {
   int width = 20;
   int height = 12;
   int fps = 10;
+  bool showVersion = false;
 };
 
 Args parseArgs(int argc, char** argv) {
@@ -25,8 +30,13 @@ Args parseArgs(int argc, char** argv) {
     else if (s == "--height") val(a.height);
     else if (s == "--fps") val(a.fps);
     else if (s == "--help" || s == "-h") {
-      std::puts("snake --width 20 --height 12 --fps 10\n"
-                "Keys: arrows/WASD move, p/space pause, r restart, q quit");
+      std::printf("snake %s\n"
+                  "Usage: snake [--width N] [--height N] [--fps N]\n"
+                  "Keys: arrows/WASD move, p/space pause, r restart, q quit",
+                  SNAKE_VERSION);
+      std::exit(0);
+    } else if (s == "--version" || s == "-V") {
+      std::printf("snake %s\n", SNAKE_VERSION);
       std::exit(0);
     }
   }

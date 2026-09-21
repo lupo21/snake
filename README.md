@@ -28,6 +28,16 @@ podman build -t snake .   # compiles + runs tests inside the build
 podman run --rm -it snake --width 30 --height 16
 ```
 
-Pushes to `main` (and PRs) trigger the same via `.github/workflows/build.yml`.
+Pushes to `main` (and PRs) trigger the same via `.github/workflows/build.yml`,
+which also uploads the built binary as an artifact.
+
+## Release
+
+```bash
+git tag v0.1.0 && git push origin v0.1.0   # builds static binary, publishes GitHub Release
+```
+
+`--version` prints the tag baked in at configure time (`-DSNAKE_VERSION=...`, default `dev`).
+Release binaries are fully static (`-DSNAKE_STATIC=ON`).
 
 Game logic lives in `src/game.{hpp,cpp}` (no I/O); terminal handling in `src/term.*`.

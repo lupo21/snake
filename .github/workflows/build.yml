@@ -25,3 +25,8 @@ jobs:
         run: cmake --build build -j
       - name: Test
         run: ctest --test-dir build --output-on-failure
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snake-linux-x86_64
+          path: build/snake

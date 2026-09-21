@@ -9,6 +9,8 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
 ./build/snake --width 20 --height 12 --fps 10
 ctest --test-dir build --output-on-failure   # builds `snake_tests`, runs game-logic asserts
 podman build -t snake .                      # same compile+test inside container; CI runs this on push/PR
+# Release: git tag vX.Y.Z && git push origin vX.Y.Z -> release.yml builds
+# static (-DSNAKE_STATIC=ON) + version-stamped (-DSNAKE_VERSION=<tag>) binary.
 ```
 
 ## Structure
