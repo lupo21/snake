@@ -8,7 +8,7 @@ C++20 CLI snake. Stdlib + POSIX `termios`/ANSI only — no ncurses, no external 
 cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
 ./build/snake --width 20 --height 12 --fps 10
 ctest --test-dir build --output-on-failure   # builds `snake_tests`, runs game-logic asserts
-docker build -t snake .                      # same compile+test inside container; CI runs this on push/PR
+podman build -t snake .                      # same compile+test inside container; CI runs this on push/PR
 ```
 
 ## Structure

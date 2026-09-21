@@ -6,12 +6,12 @@ on:
   pull_request:
 
 jobs:
-  docker:
+  container:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Build container (compiles + runs tests inside)
-        run: docker build -t snake .
+        run: podman build -t snake .
 
   native:
     runs-on: ubuntu-latest
