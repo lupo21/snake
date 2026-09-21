@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "bot.hpp"
 #include "game.hpp"
 
 namespace {
@@ -60,6 +61,41 @@ int main() {
     g.setDirection(Direction::Down);
     g.step();
     check(g.direction() == Direction::Down, "turn commits");
+  }
+  {
+    // Bot steers toward food directly ahead.
+    Game g(10, 10);
+    const Pos h = g.head();
+    g.setFoodForTest({h.x + 2, h.y});
+    check(pickMove(g) == Direction::Right, "bot seeks food ahead");
+  }
+  {
+    // Bot never picks a 180-degree reversal, even with food behind it.
+    Game g(10, 10);
+    const Pos h = g.head();
+    g.setFoodForTest({h.x - 2, h.y});
+    check(pickMove(g) != Direction::Left, "bot never reverses");
+  }
+  {
+    // Bot turns away from a wall instead of driving into it.
+    Game g(6, 6);
+    g.setSnakeForTest({{0, 2}, {1, 2}, {2, 2}}, Direction::Left);
+    g.setFoodForTest({5, 5});
+    const Direction d = pickMove(g);
+    check(d != Direction::Left, "bot avoids wall");
+    g.setDirection(d);
+    check(g.step(), "bot survives wall approach");
+  }
+  {
+    // Bot eats scripted food and grows.
+    Game g(10, 10);
+    const Pos h = g.head();
+    g.setFoodForTest({h.x + 1, h.y});
+    g.setDirection(pickMove(g));
+    const size_t n = g.snake().size();
+    g.step();
+    check(g.snake().size() == n + 1, "bot eats and grows");
+    check(g.score() == 1, "bot scores");
   }
   std::printf("all %d tests passed\n", g_pass);
   return 0;

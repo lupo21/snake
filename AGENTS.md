@@ -18,8 +18,9 @@ podman build -t snake .                      # same compile+test inside containe
 ## Structure
 
 - `src/game.{hpp,cpp}` — pure logic (`Game`: grid, snake deque, food, score, collisions). No I/O; test via `setFoodForTest` / `setSnakeForTest` hooks.
+- `src/bot.{hpp,cpp}` — greedy autopilot (`pickMove`: min Manhattan distance among surviving moves). Pure logic; `--bot` flag wires it into the tick loop, manual keys still override, no restart on game over.
 - `src/term.{hpp,cpp}` — RAII raw mode + non-blocking `pollKey()` (arrows parse `ESC [ A/B/C/D`; WASD mapped to directions).
-- `src/main.cpp` — argparse (`--width/--height/--fps`), fixed-timestep loop with score-based speedup (`max(40, 1000/fps - score*2)` ms), ANSI render (`\x1b[H` home-cursor, no full clear per frame).
+- `src/main.cpp` — argparse (`--width/--height/--fps`, `--bot`), fixed-timestep loop with score-based speedup (`max(40, 1000/fps - score*2)` ms), ANSI render (`\x1b[H` home-cursor, no full clear per frame).
 - `tests/test_game.cpp` — dependency-free assert runner, wired via `add_test`.
 - `docs/index.html` — GitHub Pages site source (`main` + `/docs`). Owner enables Pages in repo Settings; agent does not.
 

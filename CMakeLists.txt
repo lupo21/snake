@@ -18,7 +18,7 @@ if(SNAKE_CLANG_TIDY)
   set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--warnings-as-errors=*")
 endif()
 
-add_library(snake_lib src/game.cpp)
+add_library(snake_lib src/game.cpp src/bot.cpp)
 target_include_directories(snake_lib PUBLIC src)
 
 add_executable(snake src/main.cpp src/term.cpp)

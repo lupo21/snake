@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 
+#include "bot.hpp"
 #include "game.hpp"
 #include "term.hpp"
 
@@ -16,6 +17,7 @@ struct Args {
   int width = 20;
   int height = 12;
   int fps = 10;
+  bool bot = false;
   bool showVersion = false;
 };
 
@@ -32,10 +34,12 @@ Args parseArgs(int argc, char** argv) {
       val(a.height);
     } else if (s == "--fps") {
       val(a.fps);
+    } else if (s == "--bot") {
+      a.bot = true;
     } else if (s == "--help" || s == "-h") {
       std::printf(
           "snake %s\n"
-          "Usage: snake [--width N] [--height N] [--fps N]\n"
+          "Usage: snake [--width N] [--height N] [--fps N] [--bot]\n"
           "Keys: arrows/WASD move, p/space pause, r restart, q quit",
           SNAKE_VERSION);
       std::exit(0);
@@ -51,11 +55,11 @@ Args parseArgs(int argc, char** argv) {
   return a;
 }
 
-void render(const Game& g, bool paused) {
+void render(const Game& g, bool paused, bool bot) {
   // Home cursor + erase to end of screen so shorter frames (e.g. after the
   // GAME OVER line disappears on restart) leave no residue.
   std::fputs("\x1b[H\x1b[J", stdout);
-  std::printf("Score: %d  (q quit, p pause, r restart)\n", g.score());
+  std::printf("Score: %d%s  (q quit, p pause, r restart)\n", g.score(), bot ? " [BOT]" : "");
   std::putchar('+');
   for (int x = 0; x < g.width(); ++x) std::putchar('-');
   std::puts("+");
@@ -81,7 +85,10 @@ void render(const Game& g, bool paused) {
   for (int x = 0; x < g.width(); ++x) std::putchar('-');
   std::puts("+");
   if (paused) std::puts("-- PAUSED (p to resume) --");
-  if (g.isGameOver()) std::puts("GAME OVER — press r to restart, q to quit");
+  if (g.isGameOver()) {
+    std::puts(bot ? "GAME OVER — bot stopped, q to quit"
+                  : "GAME OVER — press r to restart, q to quit");
+  }
   std::fflush(stdout);
 }
 }  // namespace
@@ -92,8 +99,9 @@ int main(int argc, char** argv) {
   std::fputs("\x1b[2J", stdout);  // One full clear at startup.
 
   Game game(args.width, args.height);
+  const bool bot = args.bot;
   bool paused = false;
-  render(game, paused);
+  render(game, paused, bot);
 
   auto last = std::chrono::steady_clock::now();
   while (true) {
@@ -107,14 +115,16 @@ int main(int argc, char** argv) {
         case Key::Pause:
           if (!game.isGameOver()) {
             paused = !paused;
-            render(game, paused);
+            render(game, paused, bot);
           }
           break;
         case Key::Restart:
-          game.reset();
-          paused = false;
-          last = std::chrono::steady_clock::now();
-          render(game, paused);
+          if (!bot) {
+            game.reset();
+            paused = false;
+            last = std::chrono::steady_clock::now();
+            render(game, paused, bot);
+          }
           break;
         case Key::Up:
           game.setDirection(Direction::Up);
@@ -139,8 +149,11 @@ int main(int argc, char** argv) {
       const auto now = std::chrono::steady_clock::now();
       if (now - last >= std::chrono::milliseconds(intervalMs)) {
         last = now;
+        if (bot) {
+          game.setDirection(pickMove(game));
+        }
         game.step();
-        render(game, paused);
+        render(game, paused, bot);
       } else {
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
       }
