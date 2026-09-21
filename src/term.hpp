@@ -1,9 +1,11 @@
 #pragma once
 
+#include <cstdint>
+
 // Minimal POSIX terminal helper: raw mode + non-blocking key parse.
 // No ncurses dependency; uses termios + ANSI escape codes.
 
-enum class Key {
+enum class Key : std::uint8_t {
   None,
   Up,
   Down,

@@ -21,6 +21,16 @@ Arrows or WASD move · `p`/space pause · `r` restart · `q` quit (Ctrl-C too).
 cmake -B build && cmake --build build -j && ctest --test-dir build --output-on-failure
 ```
 
+## Quality
+
+Google style + clang-tidy, enforced by `.github/workflows/lint.yml` on push/PR
+(tidy warnings fail the build via `WarningsAsErrors`):
+
+```bash
+clang-format --dry-run --Werror src/*.cpp src/*.hpp tests/*.cpp
+cmake -B build -DCMAKE_BUILD_TYPE=Debug -DSNAKE_CLANG_TIDY=ON && cmake --build build -j
+```
+
 ## Podman build container
 
 ```bash

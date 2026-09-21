@@ -1,0 +1,27 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install -y clang-format
+      - name: Check formatting (Google style)
+        run: clang-format --dry-run --Werror src/*.cpp src/*.hpp tests/*.cpp
+
+  tidy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchain
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ clang-tidy
+      - name: Configure with clang-tidy
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DSNAKE_CLANG_TIDY=ON
+      - name: Build (tidy warnings fail the build)
+        run: cmake --build build -j

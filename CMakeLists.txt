@@ -4,6 +4,19 @@ project(snake VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Quality gate (used by .github/workflows/lint.yml, off by default):
+#   -DSNAKE_CLANG_TIDY=ON  run clang-tidy during the build; .clang-tidy sets
+#   WarningsAsErrors, so any hit fails the build. Requires clang-tidy installed.
+option(SNAKE_CLANG_TIDY "Run clang-tidy during the build (warnings fail)" OFF)
+if(SNAKE_CLANG_TIDY)
+  find_program(CLANG_TIDY_EXE NAMES clang-tidy REQUIRED)
+  # NOTE: --warnings-as-errors must be passed on the command line: clang-tidy
+  # gives CLI options (even defaults) precedence over the .clang-tidy file, so
+  # WarningsAsErrors set there alone would not fail the build.
+  set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--warnings-as-errors=*")
+endif()
 
 add_library(snake_lib src/game.cpp)
 target_include_directories(snake_lib PUBLIC src)

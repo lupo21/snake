@@ -8,6 +8,8 @@ C++20 CLI snake. Stdlib + POSIX `termios`/ANSI only — no ncurses, no external 
 cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
 ./build/snake --width 20 --height 12 --fps 10
 ctest --test-dir build --output-on-failure   # builds `snake_tests`, runs game-logic asserts
+clang-format --dry-run --Werror src/*.cpp src/*.hpp tests/*.cpp  # Google style (.clang-format)
+cmake -B build -DSNAKE_CLANG_TIDY=ON && cmake --build build -j   # tidy gate (.clang-tidy, warnings fail)
 podman build -t snake .                      # same compile+test inside container; CI runs this on push/PR
 # Release: git tag vX.Y.Z && git push origin vX.Y.Z -> release.yml builds
 # static (-DSNAKE_STATIC=ON) + version-stamped (-DSNAKE_VERSION=<tag>) binary.

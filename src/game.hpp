@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <deque>
 
 struct Pos {
@@ -8,7 +9,7 @@ struct Pos {
   bool operator==(const Pos&) const = default;
 };
 
-enum class Direction { Up, Down, Left, Right };
+enum class Direction : std::uint8_t { Up, Down, Left, Right };
 
 class Game {
  public:

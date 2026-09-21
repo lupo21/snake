@@ -6,16 +6,22 @@
 namespace {
 Pos moved(Pos p, Direction d) {
   switch (d) {
-    case Direction::Up: return {p.x, p.y - 1};
-    case Direction::Down: return {p.x, p.y + 1};
-    case Direction::Left: return {p.x - 1, p.y};
-    case Direction::Right: return {p.x + 1, p.y};
+    case Direction::Up:
+      return {p.x, p.y - 1};
+    case Direction::Down:
+      return {p.x, p.y + 1};
+    case Direction::Left:
+      return {p.x - 1, p.y};
+    case Direction::Right:
+      return {p.x + 1, p.y};
   }
   return p;
 }
 }  // namespace
 
-Game::Game(int width, int height) : w_(width), h_(height) { reset(); }
+Game::Game(int width, int height) : w_(width), h_(height) {
+  reset();
+}
 
 void Game::reset() {
   snake_.clear();
@@ -51,9 +57,13 @@ void Game::placeFood() {
   for (const auto& s : snake_) {
     if (s.x >= 0 && s.x < w_ && s.y >= 0 && s.y < h_) occ[s.y][s.x] = true;
   }
-  for (int y = 0; y < h_; ++y)
-    for (int x = 0; x < w_; ++x)
-      if (!occ[y][x]) free.push_back({x, y});
+  for (int y = 0; y < h_; ++y) {
+    for (int x = 0; x < w_; ++x) {
+      if (!occ[y][x]) {
+        free.push_back({x, y});
+      }
+    }
+  }
   if (free.empty()) {
     gameOver_ = true;  // Board full: win counts as game over.
     return;

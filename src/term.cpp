@@ -64,30 +64,43 @@ Key pollKey() {
     char d = 0;
     if (read(STDIN_FILENO, &d, 1) != 1) return Key::None;
     switch (d) {
-      case 'A': return Key::Up;
-      case 'B': return Key::Down;
-      case 'C': return Key::Right;
-      case 'D': return Key::Left;
-      default: return Key::None;
+      case 'A':
+        return Key::Up;
+      case 'B':
+        return Key::Down;
+      case 'C':
+        return Key::Right;
+      case 'D':
+        return Key::Left;
+      default:
+        return Key::None;
     }
   }
   switch (c) {
     case 'q':
     case 'Q':
-    case '\x03': return Key::Quit;  // Ctrl-C in raw mode arrives as 0x03
+    case '\x03':
+      return Key::Quit;  // Ctrl-C in raw mode arrives as 0x03
     case 'p':
     case 'P':
-    case ' ': return Key::Pause;
+    case ' ':
+      return Key::Pause;
     case 'r':
-    case 'R': return Key::Restart;
+    case 'R':
+      return Key::Restart;
     case 'w':
-    case 'W': return Key::Up;
+    case 'W':
+      return Key::Up;
     case 's':
-    case 'S': return Key::Down;
+    case 'S':
+      return Key::Down;
     case 'a':
-    case 'A': return Key::Left;
+    case 'A':
+      return Key::Left;
     case 'd':
-    case 'D': return Key::Right;
-    default: return Key::None;
+    case 'D':
+      return Key::Right;
+    default:
+      return Key::None;
   }
 }

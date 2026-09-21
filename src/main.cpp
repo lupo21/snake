@@ -26,14 +26,18 @@ Args parseArgs(int argc, char** argv) {
     auto val = [&](int& out) {
       if (i + 1 < argc) out = std::stoi(argv[++i]);
     };
-    if (s == "--width") val(a.width);
-    else if (s == "--height") val(a.height);
-    else if (s == "--fps") val(a.fps);
-    else if (s == "--help" || s == "-h") {
-      std::printf("snake %s\n"
-                  "Usage: snake [--width N] [--height N] [--fps N]\n"
-                  "Keys: arrows/WASD move, p/space pause, r restart, q quit",
-                  SNAKE_VERSION);
+    if (s == "--width") {
+      val(a.width);
+    } else if (s == "--height") {
+      val(a.height);
+    } else if (s == "--fps") {
+      val(a.fps);
+    } else if (s == "--help" || s == "-h") {
+      std::printf(
+          "snake %s\n"
+          "Usage: snake [--width N] [--height N] [--fps N]\n"
+          "Keys: arrows/WASD move, p/space pause, r restart, q quit",
+          SNAKE_VERSION);
       std::exit(0);
     } else if (s == "--version" || s == "-V") {
       std::printf("snake %s\n", SNAKE_VERSION);
@@ -77,15 +81,14 @@ void render(const Game& g, bool paused) {
   for (int x = 0; x < g.width(); ++x) std::putchar('-');
   std::puts("+");
   if (paused) std::puts("-- PAUSED (p to resume) --");
-  if (g.isGameOver())
-    std::puts("GAME OVER — press r to restart, q to quit");
+  if (g.isGameOver()) std::puts("GAME OVER — press r to restart, q to quit");
   std::fflush(stdout);
 }
 }  // namespace
 
 int main(int argc, char** argv) {
   Args args = parseArgs(argc, argv);
-  RawTerminal term;  // Restores terminal + cursor on exit.
+  RawTerminal term;               // Restores terminal + cursor on exit.
   std::fputs("\x1b[2J", stdout);  // One full clear at startup.
 
   Game game(args.width, args.height);
@@ -99,7 +102,8 @@ int main(int argc, char** argv) {
       const Key k = pollKey();
       if (k == Key::None) break;
       switch (k) {
-        case Key::Quit: return 0;
+        case Key::Quit:
+          return 0;
         case Key::Pause:
           if (!game.isGameOver()) {
             paused = !paused;
@@ -112,18 +116,26 @@ int main(int argc, char** argv) {
           last = std::chrono::steady_clock::now();
           render(game, paused);
           break;
-        case Key::Up: game.setDirection(Direction::Up); break;
-        case Key::Down: game.setDirection(Direction::Down); break;
-        case Key::Left: game.setDirection(Direction::Left); break;
-        case Key::Right: game.setDirection(Direction::Right); break;
-        case Key::None: break;
+        case Key::Up:
+          game.setDirection(Direction::Up);
+          break;
+        case Key::Down:
+          game.setDirection(Direction::Down);
+          break;
+        case Key::Left:
+          game.setDirection(Direction::Left);
+          break;
+        case Key::Right:
+          game.setDirection(Direction::Right);
+          break;
+        case Key::None:
+          break;
       }
     }
 
     if (!paused && !game.isGameOver()) {
       // Speed up slightly with score; clamp to avoid unplayable rates.
-      const int intervalMs =
-          std::max(40, 1000 / args.fps - game.score() * 2);
+      const int intervalMs = std::max(40, 1000 / args.fps - game.score() * 2);
       const auto now = std::chrono::steady_clock::now();
       if (now - last >= std::chrono::milliseconds(intervalMs)) {
         last = now;

@@ -3,21 +3,154 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="snake — minimal C++20 CLI snake. No dependencies, just CMake and a C++20 compiler." />
   <title>snake — C++20 CLI snake</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; }
-    pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; }
+    :root {
+      --bg: #0a0e0b;
+      --panel: #101713;
+      --border: #1e3a28;
+      --green: #4ade80;
+      --green-dim: #22a355;
+      --text: #d6ffe0;
+      --muted: #8fb89c;
+      --amber: #facc15;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    main { max-width: 46rem; margin: 0 auto; padding: 0 1.25rem 4rem; }
+    header.hero {
+      text-align: center;
+      padding: 4rem 1rem 2.5rem;
+      background: radial-gradient(ellipse 60% 90% at 50% 0%, #12341f 0%, var(--bg) 70%);
+    }
+    .logo {
+      font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+      font-size: 1.1rem;
+      color: var(--green);
+      letter-spacing: 0.2rem;
+    }
+    h1 {
+      font-size: 3rem;
+      margin: 0.5rem 0;
+      letter-spacing: -0.02em;
+    }
+    h1 .at { color: var(--green); }
+    .tagline { color: var(--muted); margin: 0 0 1.5rem; }
+    .buttons { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.25rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--panel);
+    }
+    .btn.primary { background: var(--green); border-color: var(--green); color: #06130b; }
+    .btn:hover { filter: brightness(1.15); }
+    section.card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    h2 { margin: 0 0 0.75rem; font-size: 1.25rem; color: var(--green); }
+    pre {
+      background: #050805;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+    code { font-family: ui-monospace, Menlo, Consolas, monospace; }
+    p code, li code, td code {
+      background: #050805;
+      border: 1px solid var(--border);
+      border-radius: 0.3rem;
+      padding: 0.05rem 0.35rem;
+      font-size: 0.9em;
+    }
+    figure.demo { margin: 1.5rem 0 0; text-align: center; }
+    figure.demo img {
+      max-width: 100%;
+      border: 2px solid var(--green-dim);
+      border-radius: 0.5rem;
+      image-rendering: pixelated;
+    }
+    figcaption { color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; }
+    table.keys { border-collapse: collapse; width: 100%; }
+    table.keys td, table.keys th {
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 0.5rem;
+      text-align: left;
+    }
+    table.keys th { color: var(--muted); font-weight: 600; }
+    ul.features { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; }
+    ul.features li::before { content: ">_ "; color: var(--green); font-family: ui-monospace, monospace; }
+    footer { text-align: center; color: var(--muted); margin-top: 2.5rem; font-size: 0.9rem; }
+    footer a { color: var(--green); }
+    @media (prefers-reduced-motion: reduce) {
+      figure.demo img { animation: none; }
+    }
   </style>
 </head>
 <body>
-  <h1>snake</h1>
-  <p>Minimal CLI snake in C++20. No dependencies — just CMake + a C++20 compiler.</p>
-  <h2>Build &amp; run</h2>
-  <pre>cmake -B build -DCMAKE_BUILD_TYPE=Release
+  <header class="hero">
+    <div class="logo">o---@*</div>
+    <h1><span class="at">@</span>snake</h1>
+    <p class="tagline">Minimal CLI snake in C++20. Stdlib + POSIX only — no ncurses, no dependencies.</p>
+    <div class="buttons">
+      <a class="btn primary" href="https://github.com/lupo21/snake/releases">Download</a>
+      <a class="btn" href="https://github.com/lupo21/snake">Source on GitHub</a>
+    </div>
+  </header>
+  <main>
+    <figure class="demo">
+      <img src="demo.gif" alt="Simulated snake gameplay: the snake eats three foods and grows" width="464" height="332" />
+      <figcaption>Simulated gameplay — arrows/WASD to steer, eat <code>*</code> to grow.</figcaption>
+    </figure>
+
+    <section class="card">
+      <h2>Features</h2>
+      <ul class="features">
+        <li>C++20, dependency-free (terminal via <code>termios</code> + ANSI codes)</li>
+        <li>Speeds up slightly as your score grows</li>
+        <li>Tested logic (<code>ctest</code>), clang-format + clang-tidy gates in CI</li>
+        <li>Static release binaries on the <a href="https://github.com/lupo21/snake/releases">releases page</a></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Build &amp; run</h2>
+      <pre><code>cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
-./build/snake</pre>
-  <h2>Keys</h2>
-  <p>Arrows / WASD move · <code>p</code> pause · <code>r</code> restart · <code>q</code> quit.</p>
-  <p><a href="https://github.com/lupo21/snake">Source on GitHub</a></p>
+./build/snake --width 30 --height 16 --fps 12</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Keys</h2>
+      <table class="keys">
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td><code>←↑↓→</code> / <code>WASD</code></td><td>Steer</td></tr>
+        <tr><td><code>p</code> / <code>space</code></td><td>Pause / resume</td></tr>
+        <tr><td><code>r</code></td><td>Restart</td></tr>
+        <tr><td><code>q</code> / <code>Ctrl-C</code></td><td>Quit</td></tr>
+      </table>
+    </section>
+
+    <footer>
+      <p>Built with C++20 · <a href="https://github.com/lupo21/snake">lupo21/snake</a></p>
+    </footer>
+  </main>
 </body>
 </html>
