@@ -17,7 +17,10 @@ RawTerminal::RawTerminal() {
   g_saved = true;
   termios raw = g_orig;
   raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-  raw.c_oflag &= ~(OPOST);
+  // NOTE: keep OPOST/ONLCR enabled. stdin/stdout share the same tty, so
+  // clearing OPOST here would stop '\n' from returning to column 0 and the
+  // board would render as a staircase.
+  raw.c_oflag |= (OPOST | ONLCR);
   raw.c_cflag |= (CS8);
   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
   raw.c_cc[VMIN] = 0;

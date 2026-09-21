@@ -38,8 +38,9 @@ Args parseArgs(int argc, char** argv) {
 }
 
 void render(const Game& g, bool paused) {
-  // Home cursor (no full clear) to reduce flicker.
-  std::fputs("\x1b[H", stdout);
+  // Home cursor + erase to end of screen so shorter frames (e.g. after the
+  // GAME OVER line disappears on restart) leave no residue.
+  std::fputs("\x1b[H\x1b[J", stdout);
   std::printf("Score: %d  (q quit, p pause, r restart)\n", g.score());
   std::putchar('+');
   for (int x = 0; x < g.width(); ++x) std::putchar('-');
@@ -122,7 +123,8 @@ int main(int argc, char** argv) {
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
       }
     } else {
-      render(game, paused);
+      // Paused or game over: static screen, redraw only on transitions
+      // (pause/restart keys and step() render explicitly above).
       std::this_thread::sleep_for(std::chrono::milliseconds(30));
     }
   }

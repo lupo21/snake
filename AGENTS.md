@@ -22,6 +22,8 @@ podman build -t snake .                      # same compile+test inside containe
 ## Gotchas
 
 - `RawTerminal` hides cursor / restores termios in dtor — game must exit through it (Ctrl-C arrives as `0x03` → `Key::Quit` since `ISIG` is off).
+- stdin/stdout share one tty: `term.cpp` must keep `OPOST`/`ONLCR` on, else `\n` loses its carriage return and the board renders as a staircase. Don't `cfmakeraw` the oflag.
+- `render()` homes + erases to end of screen (`\x1b[H\x1b[J`); paused/game-over frames are static and render only on transitions.
 - `Game::setDirection` ignores 180° reversals vs committed `dir_`, not pending — don't "fix" this.
 - Tail cell is walkable on non-eating moves (`checkLen = size - 1`); eating moves check full body.
 - `pollKey()` drains all pending keys per frame in `main`; keep that drain loop or fast input drops.
